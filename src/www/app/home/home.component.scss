@@ -1,3 +1,7 @@
+@mixin easeOut {
+  transition: all .6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
 .header {
   height: 40px;
   background-color: rgba(255,0,0, 0.6);
@@ -10,12 +14,22 @@
 
 .registration-nav {
   width: 320px;
-  height: 200px;
+  min-height: 200px;
   background-color: #f1f4f8;
 }
 
 .registration-form-wrapper {
-  height: 200px;
+  min-height: 200px;
   flex-grow: 1;
-  background-color: darken(#f1f4f8, 20%);
+  background-color: darken(#f1f4f8, 30%);
+}
+
+.step-wrapper {
+  will-change: height;
+  @include easeOut;
+  display: relative
+}
+
+.substeps-wrapper {
+  position: relative;
 }

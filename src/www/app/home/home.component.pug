@@ -3,7 +3,37 @@ h2 Home
   .header
   .registration-wrapper
     .registration-nav
+      .step-wrapper
+        .step-title
+          a(href="#")
+            h4
+              span.step-index 1
+              span.step-title-text Step Number One
+      .step-details( *ngIf="showDescription" )
+        p My money's in that office, right? If she start giving me some bullshit about it ain't there, and we got to go someplace else and get it.
+      .substeps-wrapper(
+        *ngIf="showSubsteps",
+        [@homeTransition]="" )
+        .substep
+          .substep-progress-container
+            ul.substeps
+              li
+                a.substep-title(href="#") Substep 1 Title
+              li
+                a.substep-title(href="#") Substep 2 Title
+              li
+                a.substep-title(href="#") Substep 3 Title
+              li
+                a.substep-title(href="#") Substep 4 Title
+      .step-wrapper
+        .step-title
+          a(href="#")
+            h4
+              span.step-index 2
+              span.step-title-text Step Number Two
     .registration-form-wrapper
+.container
+  button.btn.btn-primary( type="button", (click)="this.showSubsteps = !this.showSubsteps" ) Toggle Substeps
 
 
 //- .registration-workspace.container
@@ -14,16 +44,12 @@ h2 Home
       .step-wrapper( *ngFor='let step of reg_service.steps', [ngClass]="{'active': step == reg_service.currentStep" +
                                         ",'last-step-title': step.isLastStep() }" )
         //- if step invalid or current render number else check
-        
-        
         .step-col.index( [ngSwitch] = "!step.valid() || (step.index == reg_service.indexCurrentStep)" )
           span.step-title( *ngSwitchCase="true", [ngClass]="{'active': step == reg_service.currentStep}" ) {{ step.index + 1 }}
           img( *ngSwitchCase="false" src="img/icon-completed.svg")
-
         .step-col.content( [ngSwitch]="!step.previousStepValid() || (step.index == reg_service.indexCurrentStep) || (reg_service.currentStep.isLastStep())" )
           span.step-title( *ngSwitchCase="true" ) {{ step.title }}
           a.step-title( *ngSwitchCase="false", (click)="navigateToStep({step:step.name})", [ngClass]="{'completed': step.valid() && (step.index != reg_service.indexCurrentStep)}") {{ step.title }}
-          
           //- ( [ngClass]="{'active': step == reg_service.currentStep}" )
           .step-col-detail( [hidden]="step != reg_service.currentStep" )
             p.

@@ -12,26 +12,24 @@ export function homeTransition() {
 
 function melting() {
   return trigger('homeTransition', [
-    state('void', style({
-      height: 0
-    })),
-    state('*', style({
-      height: "100%"
-    })),
     transition(':enter', [
       style({
-        height: "0"
+        height: "0",
+        opacity: "0"
       }),
-      animate('500ms 0ms ease-in', style({
-        height: "100%"
+      animate('350ms 0ms cubic-bezier(0.23, 1, 0.32, 1)', style({
+        height: "*",
+        opacity: "1"
       }))
     ]),
     transition(':leave', [
       style({
-        height: "100%"
+        height: "*",
+        opacity: "1"
       }),
-      animate('500ms 0ms ease-out', style({
-        height: "0"
+      animate('350ms 0ms cubic-bezier(0.23, 1, 0.32, 1)', style({
+        height: "0",
+        opacity: "0"
       }))
     ])
   ])

@@ -1,0 +1,84 @@
+h2 Home
+.registration-workspace.container
+  .header
+  .registration-wrapper
+    .registration-nav
+    .registration-form-wrapper
+
+
+//- .registration-workspace.container
+  cp-registration-header( title='Get started registration on board' )
+
+  .registration-wrapper(cpBird='')
+    .registration-nav
+      .step-wrapper( *ngFor='let step of reg_service.steps', [ngClass]="{'active': step == reg_service.currentStep" +
+                                        ",'last-step-title': step.isLastStep() }" )
+        //- if step invalid or current render number else check
+        
+        
+        .step-col.index( [ngSwitch] = "!step.valid() || (step.index == reg_service.indexCurrentStep)" )
+          span.step-title( *ngSwitchCase="true", [ngClass]="{'active': step == reg_service.currentStep}" ) {{ step.index + 1 }}
+          img( *ngSwitchCase="false" src="img/icon-completed.svg")
+
+        .step-col.content( [ngSwitch]="!step.previousStepValid() || (step.index == reg_service.indexCurrentStep) || (reg_service.currentStep.isLastStep())" )
+          span.step-title( *ngSwitchCase="true" ) {{ step.title }}
+          a.step-title( *ngSwitchCase="false", (click)="navigateToStep({step:step.name})", [ngClass]="{'completed': step.valid() && (step.index != reg_service.indexCurrentStep)}") {{ step.title }}
+          
+          //- ( [ngClass]="{'active': step == reg_service.currentStep}" )
+          .step-col-detail( [hidden]="step != reg_service.currentStep" )
+            p.
+              {{ step.description }}
+            .substeps-progress( *ngIf="step.length > 0" )
+              .substep-progress-bar.step-col
+                .substep-progress-container( *ngFor='let substep of step.substeps' )
+                  .substep-progress-circle-container
+                    .substep-progress-circle( [ngClass]="{'active':substep == step.currentSubstep" +
+                                ",'completed':substep.valid() && (substep != step.currentSubstep) && !substep.disabled" +
+                                ",'disabled': substep.disabled" +
+                                "}" )
+
+              .substep-progress-container-info.step-col
+                .substep-progress-info-title( *ngFor='let substep of step.substeps', [ngSwitch] = "substep.disabled || !substep.previousStepValid()" +
+                                " || (substep == step.currentSubstep)")
+                  .substep-title( *ngSwitchCase="true", [cpClickOutside]="closeHint", [cpClickOutsideArgs]="substep", [isShowed]="substep.isHintShowed", [ngClass]="{'substep-active':substep == step.currentSubstep" +
+                          ",'disabled': substep.disabled" +
+                          "}" ) {{ substep.title }}
+                    cp-hint-widget(*ngIf="substep.disableHintDescriptionLinkText && substep.disabledCondition.step && substep.disabledCondition.substep",
+                            [isShowed]="substep.isHintShowed",
+                            (hintEvent)="onHintEvent($event, substep)",
+                            [text]="substep.disableHintDescription",
+                            [type]="'navigation'",
+                            [linkText]="substep.disableHintDescriptionLinkText",
+                            [linkStep]="substep.disabledCondition.step",
+                            [linkSubstep]="substep.disabledCondition.substep")
+                  a.substep-title( *ngSwitchCase="false",
+                           (click)="navigateToStep({step: step.name, substep: substep.name})",
+                           [ngClass]="{'substep-active':substep == step.currentSubstep" +
+                                ",'completed': substep.valid() && (substep != step.currentSubstep) && !substep.disabled" +
+                                "}" ) {{ substep.title }}
+
+
+    //- step title for mobile version
+    .step-title-media
+      span.index {{reg_service.indexCurrentStep + 1 + (reg_service.currentStep.hasSubsteps() ? ('.' + +(reg_service.currentStep.currentSubstep.index + 1)) : '')  }}
+      span.content {{reg_service.currentStep.title}}
+      span.substep-content( *ngIf='reg_service.currentStep.hasSubsteps()' )  / {{ reg_service.currentStep.currentSubstep.title }}
+    .registration-form-wrapper
+      //- TODO для Игоря - вернуть треугольник, чтоб работал как надо :)
+      //- .triangle
+      .form-container
+        cp-registration-form( [widgetConfigs]="reg_service.currentStep.widgetConfigs",
+                    [formMetadata]="reg_service.currentStep",
+                    [nextButtonConfig]="reg_service.currentStep.hasSubsteps() ? reg_service.currentStep.currentSubstep.nextButtonConfig : reg_service.currentStep.nextButtonConfig" )
+      .last-step-wrapper( *ngIf='reg_service.currentStep.isLastStep()' )
+      .progress-component
+        .step-progress-circle( [ngClass]="{'active': step == reg_service.currentStep}", *ngFor='let step of reg_service.steps', (click)="navigateToStep({step:step.name})" )
+
+      .form-footer-wrapper
+        .form-footer-col.icon
+        .form-footer-col.content( (click)="reg_service.clearAll()" )
+          p.
+            Using of the Cardpay Service and this website constitutes
+            acceptanse of our Terms of Use and Privacy Policy (c) 2007-2017.
+            Cardpay Inc. <br/> All rights reserved
+          p.version {{appVersion}}

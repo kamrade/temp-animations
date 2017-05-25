@@ -1,0 +1,18 @@
+.app-wrapper
+    header
+        .container
+            nav.navbar.navbar-inverse
+                .navbar-header
+                    a.navbar-brand( href="#" ) My Roating App
+                ul.nav
+                    li.nav-item
+                        a.nav-link( routerLink="" routerLinkActive="active" ) Home
+                    li.nav-item
+                        a.nav-link( routerLink="about" routerLinkActive="active" ) About
+                    li.nav-item
+                        a.nav-link( routerLink="contact" routerLinkActive="active" ) Contact
+    
+    main
+        .container
+            router-outlet
+    
